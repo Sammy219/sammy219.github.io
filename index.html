@@ -65,6 +65,7 @@
     .cc .banner img { box-shadow: 0 10px 30px rgba(34,160,107,.35); }
     .banner h2 { margin: 0; font-size: 24px; line-height: 1.2; }
     .banner .ver { color: var(--muted); font-size: 13px; }
+    .banner .ver .n { color: var(--text); font-weight: 600; }
     .body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
     .body p { margin: 0; color: var(--muted); font-size: 15px; }
     .body ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
@@ -126,7 +127,7 @@
         <img src="assets/omosync-logo.png" alt="">
         <div>
           <h2>OmoSync</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.4.7 · Android 10+</div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.4.7 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -162,7 +163,7 @@
         <img src="assets/systemmonitor-logo.svg" alt="">
         <div>
           <h2>SystemMonitor</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+</div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+ <span class="dl" data-dl="Sammy219/systemmonitor-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -193,7 +194,7 @@
         <img src="assets/chargecall-logo.svg" alt="">
         <div>
           <h2>ChargeCall</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+</div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+ <span class="dl" data-dl="Sammy219/chargecall-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -224,7 +225,7 @@
         <img src="assets/tabstation-logo.svg" alt="">
         <div>
           <h2>TabStation</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.17.0 · Android 10+</div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.17.0 · Android 10+ <span class="dl" data-dl="Sammy219/tabstation-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -284,6 +285,21 @@
   </footer>
 </div>
 <script>
+  (function () {
+    // Jumlah unduhan APK dari rilis GitHub (API publik, dibaca oleh browser pengunjung). Gagal/limit -> lencana tetap tersembunyi.
+    document.querySelectorAll('[data-dl]').forEach(function (el) {
+      fetch('https://api.github.com/repos/' + el.getAttribute('data-dl') + '/releases?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (rels) {
+          var n = 0;
+          rels.forEach(function (r) { (r.assets || []).forEach(function (a) { if (/\.apk$/i.test(a.name)) n += a.download_count || 0; }); });
+          if (n <= 0) return;
+          el.querySelector('.n').textContent = n.toLocaleString();
+          el.hidden = false;
+        })
+        .catch(function () { /* offline atau limit API: biarkan tersembunyi */ });
+    });
+  })();
   (function () {
     var root = document.documentElement;
     function apply(lang) {
