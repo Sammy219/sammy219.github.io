@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="darkreader-lock">
+  <meta name="theme-color" content="#090e1c">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HelloWorld Apps</title>
+  <meta name="description" content="Aplikasi Android buatan HelloWorld: OmoSync (Android Auto di layar motor OMOWAY OMO X) dan SystemMonitor (Task Manager ala Windows untuk Android).">
+  <link rel="icon" href="assets/systemmonitor-logo.svg" type="image/svg+xml">
+  <style>
+    /* Halaman sengaja gelap, sama seperti halaman unduh tiap aplikasi. */
+    :root {
+      color-scheme: dark;
+      --bg: #090e1c; --surface: #111a2c; --surface-2: #16223a; --line: #22304d;
+      --text: #e8edf7; --muted: #93a0b8; --accent: #5b8cff; --accent-ink: #06122b;
+      /* OmoSync: biru → sian → teal; SystemMonitor: biru → hijau → oranye */
+      --grad-omo: linear-gradient(120deg, #0a84ff 0%, #22c4f5 55%, #2ee6a8 100%);
+      --grad-sm: linear-gradient(120deg, #5b8cff 0%, #7fd1a8 60%, #ffb86b 100%);
+      --grad: linear-gradient(120deg, #0a84ff 0%, #22c4f5 35%, #7fd1a8 70%, #ffb86b 100%);
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: radial-gradient(900px 520px at 85% -140px, rgba(34,196,245,.14), transparent 70%), radial-gradient(760px 480px at -10% 160px, rgba(91,140,255,.12), transparent 70%), var(--bg); background-repeat: no-repeat; color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    a { color: var(--accent); }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+    header.top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+    .brand { font-weight: 700; letter-spacing: .3px; }
+    .brand span { color: var(--muted); font-weight: 500; }
+    .lang button { background: none; border: 1px solid var(--line); color: var(--muted); padding: 4px 10px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 13px; }
+    .lang button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); }
+    .hero { padding: 40px 0 32px; }
+    .grad-text { color: var(--accent); }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    }
+    .hero h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.12; margin: 0 0 12px; }
+    .hero p { color: var(--muted); font-size: 18px; margin: 0; max-width: 640px; }
+    .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; padding-bottom: 28px; }
+    .app { display: flex; flex-direction: column; background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; transition: border-color .15s, transform .15s; }
+    .app:hover { border-color: #33466f; transform: translateY(-2px); }
+    .banner { position: relative; padding: 26px 22px 20px; display: flex; gap: 16px; align-items: center; }
+    .banner::after { content: ""; position: absolute; inset: auto 0 0 0; height: 3px; }
+    .omo .banner { background: radial-gradient(420px 160px at 90% -40px, rgba(34,196,245,.22), transparent 70%); }
+    .omo .banner::after { background: var(--grad-omo); }
+    .sm .banner { background: radial-gradient(420px 160px at 90% -40px, rgba(127,209,168,.20), transparent 70%); }
+    .sm .banner::after { background: var(--grad-sm); }
+    .banner img { width: 72px; height: 72px; border-radius: 18px; flex: none; }
+    .omo .banner img { box-shadow: 0 10px 30px rgba(10,132,255,.35); }
+    .sm .banner img { box-shadow: 0 10px 30px rgba(91,140,255,.35); }
+    .banner h2 { margin: 0; font-size: 24px; line-height: 1.2; }
+    .banner .ver { color: var(--muted); font-size: 13px; }
+    .body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .body p { margin: 0; color: var(--muted); font-size: 15px; }
+    .body ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    .body li { margin: 2px 0; }
+    .shot { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+    .shot img { display: block; width: 100%; height: auto; }
+    .needs { font-size: 13px; color: var(--muted); }
+    .needs b { color: var(--text); font-weight: 600; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 4px; }
+    .btn { display: inline-block; color: var(--accent-ink); font-weight: 700; text-decoration: none; padding: 12px 18px; border-radius: 12px; transition: transform .15s, box-shadow .15s; }
+    .omo .btn.main { background: var(--grad-omo); box-shadow: 0 8px 22px rgba(34,196,245,.25); }
+    .sm .btn.main { background: var(--grad-sm); box-shadow: 0 8px 22px rgba(91,140,255,.25); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.ghost { background: rgba(255,255,255,.02); color: var(--text); border: 1px solid var(--line); font-weight: 600; }
+    .btn.ghost:hover { border-color: var(--accent); }
+    section { padding: 28px 0; border-top: 1px solid var(--line); }
+    h3 { font-size: 20px; margin: 0 0 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .card b { display: block; margin-bottom: 4px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .support { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--accent); border-radius: 14px; padding: 18px; }
+    .support p { margin: 0; color: var(--muted); font-size: 15px; max-width: 620px; }
+    .support p b { color: var(--text); }
+    .support .btn { background: var(--grad); }
+    .contact { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 14px; }
+    .contact p { margin: 0; color: var(--muted); font-size: 15px; }
+    .contact a.mail { display: inline-block; background: var(--grad); color: var(--accent-ink); font-weight: 600; text-decoration: none; padding: 10px 16px; border-radius: 10px; }
+    footer { color: var(--muted); font-size: 13px; padding: 26px 0 40px; border-top: 1px solid var(--line); }
+    [data-en] { display: none; }
+    html[lang="en"] [data-id] { display: none; }
+    html[lang="en"] [data-en] { display: revert; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">HelloWorld <span>Apps</span></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set-lang="id" aria-pressed="true">ID</button>
+      <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1 data-id>Aplikasi Android <span class="grad-text">buatan HelloWorld</span></h1>
+    <h1 data-en>Android apps <span class="grad-text">by HelloWorld</span></h1>
+    <p data-id>Gratis, tanpa iklan, dan dibagikan langsung di sini. Setiap rilis ditandatangani dengan kunci yang sama dan disertai SHA-256.</p>
+    <p data-en>Free, no ads, distributed right here. Every release is signed with the same key and comes with its SHA-256.</p>
+  </div>
+
+  <div class="apps">
+    <article class="app omo">
+      <div class="banner">
+        <img src="assets/omosync-logo.png" alt="">
+        <div>
+          <h2>OmoSync</h2>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.4.7 · Android 10+</div>
+        </div>
+      </div>
+      <div class="body">
+        <p data-id>Android Auto di layar cockpit motor OMOWAY OMO X lewat Wi-Fi, ditata pas untuk layar lebar 1920×720, plus suara mesin prosedural.</p>
+        <p data-en>Android Auto on the OMOWAY OMO X cockpit screen over Wi-Fi, laid out for the wide 1920×720 display, plus a procedural engine sound.</p>
+        <ul data-id>
+          <li>Kontrol Android Auto dari HP (layar motor tidak bisa disentuh)</li>
+          <li>Sebelas preset suara mesin dengan gearbox virtual</li>
+          <li>Simulator Mac/PC untuk mencoba tanpa motor</li>
+        </ul>
+        <ul data-en>
+          <li>Control Android Auto from the phone (the bike screen has no touch)</li>
+          <li>Eleven engine-sound presets with a virtual gearbox</li>
+          <li>A Mac/PC simulator to try it without the bike</li>
+        </ul>
+        <div class="needs"><span data-id>Butuh:</span><span data-en>Needs:</span> <b>Android Auto</b> · <span data-id>motor</span><span data-en>bike</span> <b>OMOWAY OMO X</b></div>
+        <div class="cta">
+          <a class="btn main" href="https://github.com/omosync/omosync.github.io/releases/download/v0.4.7/OmoSync-0.4.7.apk">
+            <span data-id>Unduh APK 0.4.7</span><span data-en>Download APK 0.4.7</span>
+          </a>
+          <a class="btn ghost" href="https://omosync.github.io/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="app sm">
+      <div class="banner">
+        <img src="assets/systemmonitor-logo.svg" alt="">
+        <div>
+          <h2>SystemMonitor</h2>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.2 · Android 10+</div>
+        </div>
+      </div>
+      <div class="body">
+        <p data-id>Task Manager ala Windows untuk tablet dan HP Android: proses per aplikasi, grafik CPU, memori, penyimpanan, jaringan, dan GPU.</p>
+        <p data-en>A Windows-style Task Manager for Android tablets and phones: processes per app, graphs for CPU, memory, storage, network and GPU.</p>
+        <div class="shot"><img src="assets/systemmonitor-performa.jpg" loading="lazy" alt="SystemMonitor: tab Performa"></div>
+        <ul data-id>
+          <li>Tombol Bersihkan untuk aplikasi cache</li>
+          <li>Panduan setup yang memeriksa semuanya</li>
+          <li>Tanpa root dan tanpa izin internet</li>
+        </ul>
+        <ul data-en>
+          <li>A Clean button for cached apps</li>
+          <li>A setup guide that checks everything</li>
+          <li>No root and no internet permission</li>
+        </ul>
+        <div class="needs"><span data-id>Butuh:</span><span data-en>Needs:</span> <b>Shizuku</b></div>
+        <div class="cta">
+          <a class="btn main" href="https://github.com/Sammy219/systemmonitor-app/releases/download/v2.2/SystemMonitor-2.2.apk">
+            <span data-id>Unduh APK 2.2</span><span data-en>Download APK 2.2</span>
+          </a>
+          <a class="btn ghost" href="https://sammy219.github.io/systemmonitor-app/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section>
+    <h3 data-id>Cara memasang</h3><h3 data-en>How to install</h3>
+    <div class="grid">
+      <div class="card"><b data-id>1. Unduh APK</b><b data-en>1. Download the APK</b>
+        <p data-id>Buka halaman ini di perangkat Android, lalu ketuk Unduh.</p><p data-en>Open this page on the Android device and tap Download.</p></div>
+      <div class="card"><b data-id>2. Izinkan pemasangan</b><b data-en>2. Allow the install</b>
+        <p data-id>Izinkan pemasangan dari browser. Kalau Play Protect bertanya, pilih "Install anyway".</p><p data-en>Allow installs from the browser. If Play Protect asks, choose "Install anyway".</p></div>
+      <div class="card"><b data-id>3. Ikuti Setup di aplikasi</b><b data-en>3. Follow the in-app Setup</b>
+        <p data-id>Kedua aplikasi punya tab Setup yang memeriksa setiap langkah dan memandu sisanya.</p><p data-en>Both apps have a Setup tab that checks each step and guides you through the rest.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="support">
+      <p data-id><b>Semua aplikasi gratis dan tanpa iklan.</b><br>Kalau berguna, kamu bisa traktir kopi lewat Saweria untuk membantu pengembangan berikutnya.</p>
+      <p data-en><b>Every app is free and has no ads.</b><br>If they help you, you can buy me a coffee on Saweria to support what comes next.</p>
+      <a class="btn" href="https://saweria.co/HelloWorld009" target="_blank" rel="noopener">
+        <span data-id>Dukung via Saweria</span><span data-en>Support on Saweria</span>
+      </a>
+    </div>
+    <div class="contact">
+      <p data-id><b>Saran, masukan, atau laporan masalah?</b><br>Kirim email — sebutkan aplikasinya, versinya, dan tipe perangkat.</p>
+      <p data-en><b>Suggestions, feedback or a bug?</b><br>Send an email — mention the app, its version and your device.</p>
+      <a class="mail" href="mailto:masterz1030@gmail.com">masterz1030@gmail.com</a>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 HelloWorld · <span data-id>Proyek pribadi, tanpa garansi. Tidak berafiliasi dengan OMOWAY, Google, Shizuku/RikkaApps, Xiaomi, maupun Microsoft.</span><span data-en>Personal projects, no warranty. Not affiliated with OMOWAY, Google, Shizuku/RikkaApps, Xiaomi or Microsoft.</span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    function apply(lang) {
+      root.lang = lang;
+      document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === lang));
+      });
+      // kunci yang sama dengan halaman SystemMonitor, supaya pilihan bahasa ikut terbawa
+      try { localStorage.setItem('systemmonitor-lang', lang); localStorage.setItem('helloworld-lang', lang); } catch (e) { /* storage unavailable */ }
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('helloworld-lang'); } catch (e) { /* storage unavailable */ }
+    apply(saved || (navigator.language && navigator.language.toLowerCase().indexOf('id') === 0 ? 'id' : 'en'));
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.getAttribute('data-set-lang')); });
+    });
+  })();
+</script>
+</body>
+</html>
