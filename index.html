@@ -8,7 +8,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HelloWorld Apps</title>
   <meta name="description" content="Aplikasi Android buatan HelloWorld: OmoSync (Android Auto di layar motor OMOWAY OMO X) dan SystemMonitor (Task Manager ala Windows untuk Android).">
-  <link rel="icon" href="assets/systemmonitor-logo.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/helloworld-logo.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/helloworld-logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/helloworld-logo.png">
   <style>
     /* Halaman sengaja gelap, sama seperti halaman unduh tiap aplikasi. */
     :root {
@@ -26,7 +28,8 @@
     a { color: var(--accent); }
     .wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
     header.top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
-    .brand { font-weight: 700; letter-spacing: .3px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .3px; }
+    .brand img { width: 34px; height: 34px; border-radius: 9px; }
     .brand span { color: var(--muted); font-weight: 500; }
     .lang button { background: none; border: 1px solid var(--line); color: var(--muted); padding: 4px 10px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 13px; }
     .lang button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); }
@@ -57,6 +60,8 @@
     .body li { margin: 2px 0; }
     .shot { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
     .shot img { display: block; width: 100%; height: auto; }
+    .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .strip img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); }
     .needs { font-size: 13px; color: var(--muted); }
     .needs b { color: var(--text); font-weight: 600; }
     .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 4px; }
@@ -88,7 +93,7 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand">HelloWorld <span>Apps</span></div>
+    <div class="brand"><img src="assets/helloworld-logo.svg" alt=""> HelloWorld <span>Apps</span></div>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set-lang="id" aria-pressed="true">ID</button>
       <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
@@ -114,6 +119,11 @@
       <div class="body">
         <p data-id>Android Auto di layar cockpit motor OMOWAY OMO X lewat Wi-Fi, ditata pas untuk layar lebar 1920×720, plus suara mesin prosedural.</p>
         <p data-en>Android Auto on the OMOWAY OMO X cockpit screen over Wi-Fi, laid out for the wide 1920×720 display, plus a procedural engine sound.</p>
+        <div class="strip">
+          <img src="assets/omosync-cockpit.jpg" loading="lazy" alt="OmoSync: Cockpit">
+          <img src="assets/omosync-setup.jpg" loading="lazy" alt="OmoSync: Setup">
+          <img src="assets/omosync-head-unit.jpg" loading="lazy" alt="OmoSync: Head unit">
+        </div>
         <ul data-id>
           <li>Kontrol Android Auto dari HP (layar motor tidak bisa disentuh)</li>
           <li>Sebelas preset suara mesin dengan gearbox virtual</li>
