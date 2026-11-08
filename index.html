@@ -6,11 +6,11 @@
   <meta name="darkreader-lock">
   <meta name="theme-color" content="#090e1c">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HelloWorld Apps</title>
-  <meta name="description" content="Aplikasi Android buatan HelloWorld: OmoSync (Android Auto di layar motor OMOWAY OMO X) dan SystemMonitor (Task Manager ala Windows untuk Android).">
-  <link rel="icon" href="assets/helloworld-logo.svg" type="image/svg+xml">
-  <link rel="icon" href="assets/helloworld-logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/helloworld-logo.png">
+  <title>OverNightCoder Apps</title>
+  <meta name="description" content="Aplikasi Android buatan OverNightCoder: OmoSync (Android Auto di layar motor OMOWAY OMO X) dan SystemMonitor (Task Manager ala Windows untuk Android).">
+  <link rel="icon" href="assets/overnightcoder-logo.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/overnightcoder-logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/overnightcoder-logo.png">
   <style>
     /* Halaman sengaja gelap, sama seperti halaman unduh tiap aplikasi. */
     :root {
@@ -93,7 +93,7 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><img src="assets/helloworld-logo.svg" alt=""> HelloWorld <span>Apps</span></div>
+    <div class="brand"><img src="assets/overnightcoder-logo.svg" alt=""> OverNightCoder <span>Apps</span></div>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set-lang="id" aria-pressed="true">ID</button>
       <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
@@ -101,8 +101,8 @@
   </header>
 
   <div class="hero">
-    <h1 data-id>Aplikasi Android <span class="grad-text">buatan HelloWorld</span></h1>
-    <h1 data-en>Android apps <span class="grad-text">by HelloWorld</span></h1>
+    <h1 data-id>Aplikasi Android <span class="grad-text">buatan OverNightCoder</span></h1>
+    <h1 data-en>Android apps <span class="grad-text">by OverNightCoder</span></h1>
     <p data-id>Gratis, tanpa iklan, dan dibagikan langsung di sini. Setiap rilis ditandatangani dengan kunci yang sama dan disertai SHA-256.</p>
     <p data-en>Free, no ads, distributed right here. Every release is signed with the same key and comes with its SHA-256.</p>
   </div>
@@ -205,7 +205,7 @@
   </section>
 
   <footer>
-    © 2026 HelloWorld · <span data-id>Proyek pribadi, tanpa garansi. Tidak berafiliasi dengan OMOWAY, Google, Shizuku/RikkaApps, Xiaomi, maupun Microsoft.</span><span data-en>Personal projects, no warranty. Not affiliated with OMOWAY, Google, Shizuku/RikkaApps, Xiaomi or Microsoft.</span>
+    © 2026 OverNightCoder · <span data-id>Proyek pribadi, tanpa garansi. Tidak berafiliasi dengan OMOWAY, Google, Shizuku/RikkaApps, Xiaomi, maupun Microsoft.</span><span data-en>Personal projects, no warranty. Not affiliated with OMOWAY, Google, Shizuku/RikkaApps, Xiaomi or Microsoft.</span>
   </footer>
 </div>
 <script>
@@ -217,10 +217,10 @@
         b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === lang));
       });
       // kunci yang sama dengan halaman SystemMonitor, supaya pilihan bahasa ikut terbawa
-      try { localStorage.setItem('systemmonitor-lang', lang); localStorage.setItem('helloworld-lang', lang); } catch (e) { /* storage unavailable */ }
+      try { localStorage.setItem('systemmonitor-lang', lang); localStorage.setItem('overnightcoder-lang', lang); } catch (e) { /* storage unavailable */ }
     }
     var saved = null;
-    try { saved = localStorage.getItem('helloworld-lang'); } catch (e) { /* storage unavailable */ }
+    try { saved = localStorage.getItem('overnightcoder-lang'); } catch (e) { /* storage unavailable */ }
     apply(saved || (navigator.language && navigator.language.toLowerCase().indexOf('id') === 0 ? 'id' : 'en'));
     document.querySelectorAll('[data-set-lang]').forEach(function (b) {
       b.addEventListener('click', function () { apply(b.getAttribute('data-set-lang')); });
