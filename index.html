@@ -58,9 +58,21 @@
     .hero h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.12; margin: 0 0 12px; }
     .hero p { color: var(--muted); font-size: 18px; margin: 0; max-width: 640px; }
     /* Satu baris kartu yang digeser horizontal (snap per kartu); di HP tiap kartu ±85% lebar layar. */
-    .apps { display: grid; grid-auto-flow: column; grid-auto-columns: min(340px, 85vw); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 4px 28px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; -webkit-overflow-scrolling: touch; }
+    .apps { display: grid; grid-auto-flow: column; grid-auto-columns: min(340px, 85vw); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 4px; padding: 4px 4px 28px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; -webkit-overflow-scrolling: touch; }
     .apps::-webkit-scrollbar { height: 8px; }
     .apps::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+    /* Panah geser: hanya muncul bila masih ada kartu ke arah itu (diatur JS lewat .can-left/.can-right). */
+    .apps-wrap { position: relative; }
+    .apps-wrap::before, .apps-wrap::after { content: ""; position: absolute; top: 0; bottom: 28px; width: 56px; pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 1; }
+    .apps-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
+    .apps-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
+    .apps-wrap.can-left::before, .apps-wrap.can-right::after { opacity: .85; }
+    .apps-nav { position: absolute; top: calc(50% - 14px); transform: translateY(-50%); z-index: 2; width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--line); background: rgba(17,26,44,.92); color: var(--text); display: grid; place-items: center; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.45); opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s, border-color .15s; padding: 0; }
+    .apps-nav:hover, .apps-nav:focus-visible { border-color: var(--accent); outline: none; }
+    .apps-nav svg { width: 20px; height: 20px; }
+    .apps-nav.prev { left: 6px; }
+    .apps-nav.next { right: 6px; }
+    .apps-wrap.can-left .apps-nav.prev, .apps-wrap.can-right .apps-nav.next { opacity: 1; visibility: visible; }
     .app { scroll-snap-align: start; display: flex; flex-direction: column; background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; transition: border-color .15s, transform .15s; }
     .app:hover { border-color: #33466f; transform: translateY(-2px); }
     .banner { position: relative; padding: 26px 22px 20px; display: flex; gap: 16px; align-items: center; }
@@ -81,6 +93,9 @@
     .banner h2 { margin: 0; font-size: 24px; line-height: 1.2; }
     .banner .ver { color: var(--muted); font-size: 13px; }
     .banner .ver .n { color: var(--text); font-weight: 600; }
+    /* Jumlah unduhan di baris sendiri, di bawah versi, supaya tidak terlipat di tengah. */
+    .banner .ver .dl { display: block; }
+    .banner .ver .dl[hidden] { display: none; }
     .body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
     .body p { margin: 0; color: var(--muted); font-size: 15px; }
     .body ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
@@ -137,13 +152,16 @@
     <p data-en>Free, no ads, distributed right here. Every release is signed with the same key and comes with its SHA-256.</p>
   </div>
 
+  <div class="apps-wrap">
+  <button type="button" class="apps-nav prev" aria-label="Geser ke kiri" data-dir="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button type="button" class="apps-nav next" aria-label="Geser ke kanan" data-dir="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
   <div class="apps">
     <article class="app omo">
       <div class="banner">
         <img src="assets/omosync-logo.png" alt="">
         <div>
           <h2>OmoSync</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.4.7 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.5.0 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -166,8 +184,8 @@
         </ul>
         <div class="needs"><span data-id>Butuh:</span><span data-en>Needs:</span> <b>Android Auto</b> · <span data-id>motor</span><span data-en>bike</span> <b>OMOWAY OMO X</b></div>
         <div class="cta">
-          <a class="btn main" href="https://github.com/omosync/omosync.github.io/releases/download/v0.4.7/OmoSync-0.4.7.apk" data-goatcounter-click="landing-omosync-download-apk">
-            <span data-id>Unduh APK 0.4.7</span><span data-en>Download APK 0.4.7</span>
+          <a class="btn main" href="https://github.com/omosync/omosync.github.io/releases/download/v0.5.0/OmoSync-0.5.0.apk" data-goatcounter-click="landing-omosync-download-apk">
+            <span data-id>Unduh APK 0.5.0</span><span data-en>Download APK 0.5.0</span>
           </a>
           <a class="btn ghost" href="https://omosync.github.io/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
         </div>
@@ -179,7 +197,7 @@
         <img src="assets/systemmonitor-logo.svg" alt="">
         <div>
           <h2>SystemMonitor</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+ <span class="dl" data-dl="overnightcoder219/systemmonitor-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+ <span class="dl" data-dl="overnightcoder219/systemmonitor-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -210,7 +228,7 @@
         <img src="assets/chargecall-logo.svg" alt="">
         <div>
           <h2>ChargeCall</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/chargecall-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/chargecall-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -241,7 +259,7 @@
         <img src="assets/tabstation-logo.svg" alt="">
         <div>
           <h2>TabStation</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.17.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/tabstation-app" hidden>· <b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.17.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/tabstation-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -267,6 +285,7 @@
         </div>
       </div>
     </article>
+  </div>
   </div>
 
   <section>
@@ -301,6 +320,28 @@
   </footer>
 </div>
 <script>
+  (function () {
+    // Panah kiri/kanan daftar aplikasi: tampil hanya jika belum mentok di sisi itu.
+    var wrap = document.querySelector('.apps-wrap');
+    if (!wrap) return;
+    var list = wrap.querySelector('.apps');
+    function update() {
+      var max = list.scrollWidth - list.clientWidth;
+      wrap.classList.toggle('can-left', list.scrollLeft > 2);
+      wrap.classList.toggle('can-right', list.scrollLeft < max - 2);
+    }
+    wrap.querySelectorAll('.apps-nav').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var card = list.querySelector('.app');
+        var step = card ? card.getBoundingClientRect().width + 18 : list.clientWidth * 0.8;
+        list.scrollBy({ left: step * Number(b.getAttribute('data-dir')), behavior: 'smooth' });
+      });
+    });
+    list.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    window.addEventListener('load', update);
+    update();
+  })();
   (function () {
     // Jumlah unduhan APK dari rilis GitHub (API publik, dibaca oleh browser pengunjung). Gagal/limit -> lencana tetap tersembunyi.
     document.querySelectorAll('[data-dl]').forEach(function (el) {
