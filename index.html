@@ -191,7 +191,7 @@
         <img src="assets/omosync-logo.webp" alt="" width="72" height="72">
         <div>
           <h2>OmoSync</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.5.0 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.5.1 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -214,8 +214,8 @@
         </ul>
         <div class="needs"><span data-id>Butuh:</span><span data-en>Needs:</span> <b>Android Auto</b> · <span data-id>motor</span><span data-en>bike</span> <b>OMOWAY OMO X</b></div>
         <div class="cta">
-          <a class="btn main" href="https://github.com/omosync/omosync.github.io/releases/download/v0.5.0/OmoSync-0.5.0.apk" data-goatcounter-click="landing-omosync-download-apk">
-            <span data-id>Unduh APK 0.5.0</span><span data-en>Download APK 0.5.0</span>
+          <a class="btn main" href="https://github.com/omosync/omosync.github.io/releases/download/v0.5.1/OmoSync-0.5.1.apk" data-goatcounter-click="landing-omosync-download-apk">
+            <span data-id>Unduh APK 0.5.1</span><span data-en>Download APK 0.5.1</span>
           </a>
           <a class="btn ghost" href="https://omosync.github.io/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
         </div>
@@ -384,13 +384,24 @@
     var list = wrap.querySelector('.apps'), dots = document.querySelector('.apps-dots');
     function cards() { return Array.prototype.filter.call(list.querySelectorAll('.app'), function (c) { return !c.hidden; }); }
     function step() { var c = cards()[0]; return c ? c.getBoundingClientRect().width + 18 : list.clientWidth * 0.8; }
+    // Satu titik per posisi geser yang benar-benar bisa dicapai: di layar lebar beberapa kartu terakhir
+    // sudah muat sekaligus, jadi kartu-kartu itu berbagi satu posisi (ujung kanan) dan satu titik.
+    var stops = [];
     function buildDots() {
+      var max = Math.max(0, list.scrollWidth - list.clientWidth), base = list.getBoundingClientRect().left - list.scrollLeft + 4;
+      stops = [];
+      cards().forEach(function (c) {
+        var x = Math.min(Math.max(0, Math.round(c.getBoundingClientRect().left - base)), max);
+        var last = stops[stops.length - 1];
+        if (last && Math.abs(last.x - x) < 3) last.names.push(c.querySelector('h2').firstChild.textContent.trim());
+        else stops.push({ x: x, names: [c.querySelector('h2').firstChild.textContent.trim()] });
+      });
       dots.innerHTML = '';
-      cards().forEach(function (c, i) {
+      stops.forEach(function (st) {
         var b = document.createElement('button');
         b.type = 'button';
-        b.setAttribute('aria-label', c.querySelector('h2').firstChild.textContent.trim());
-        b.addEventListener('click', function () { list.scrollTo({ left: list.scrollLeft + c.getBoundingClientRect().left - list.getBoundingClientRect().left - 4, behavior: 'smooth' }); });
+        b.setAttribute('aria-label', st.names.join(', '));
+        b.addEventListener('click', function () { list.scrollTo({ left: st.x, behavior: 'smooth' }); });
         dots.appendChild(b);
       });
     }
@@ -398,10 +409,10 @@
       var max = list.scrollWidth - list.clientWidth;
       wrap.classList.toggle('can-left', list.scrollLeft > 2);
       wrap.classList.toggle('can-right', list.scrollLeft < max - 2);
-      dots.hidden = max <= 2;
-      var bs = dots.children, n = bs.length;
-      var at = max <= 2 ? 0 : (list.scrollLeft >= max - 2 ? n - 1 : Math.round(list.scrollLeft / step()));
-      for (var i = 0; i < n; i++) bs[i].setAttribute('aria-current', String(i === at));
+      dots.hidden = max <= 2 || stops.length < 2;
+      var at = 0, best = Infinity;
+      stops.forEach(function (st, i) { var d = Math.abs(st.x - list.scrollLeft); if (d < best) { best = d; at = i; } });
+      for (var i = 0; i < dots.children.length; i++) dots.children[i].setAttribute('aria-current', String(i === at));
     }
     wrap.querySelectorAll('.apps-nav').forEach(function (b) {
       b.addEventListener('click', function () { list.scrollBy({ left: step() * Number(b.getAttribute('data-dir')), behavior: 'smooth' }); });
@@ -416,8 +427,8 @@
       });
     });
     list.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    window.addEventListener('load', update);
+    window.addEventListener('resize', function () { buildDots(); update(); });
+    window.addEventListener('load', function () { buildDots(); update(); });
     buildDots(); update();
   })();
   (function () {
