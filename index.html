@@ -227,7 +227,7 @@
         <img src="assets/systemmonitor-logo.svg" alt="" width="72" height="72">
         <div>
           <h2>SystemMonitor</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+ <span class="dl" data-dl="overnightcoder219/systemmonitor-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.4 · Android 10+ <span class="dl" data-dl="overnightcoder219/systemmonitor-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -246,8 +246,8 @@
         </ul>
         <div class="needs"><span data-id>Butuh:</span><span data-en>Needs:</span> <b>Shizuku</b></div>
         <div class="cta">
-          <a class="btn main" href="https://github.com/overnightcoder219/systemmonitor-app/releases/download/v2.3/SystemMonitor-2.3.apk" data-goatcounter-click="landing-systemmonitor-download-apk">
-            <span data-id>Unduh APK 2.3</span><span data-en>Download APK 2.3</span>
+          <a class="btn main" href="https://github.com/overnightcoder219/systemmonitor-app/releases/download/v2.4/SystemMonitor-2.4.apk" data-goatcounter-click="landing-systemmonitor-download-apk">
+            <span data-id>Unduh APK 2.4</span><span data-en>Download APK 2.4</span>
           </a>
           <a class="btn ghost" href="https://overnightcoder219.github.io/systemmonitor-app/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
         </div>
@@ -258,7 +258,7 @@
         <img src="assets/chargecall-logo.svg" alt="" width="72" height="72">
         <div>
           <h2>ChargeCall</h2>
-          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/chargecall-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
+          <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.7.0 · Android 10+ <span class="dl" data-dl="overnightcoder219/chargecall-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
         </div>
       </div>
       <div class="body">
@@ -277,8 +277,8 @@
         </ul>
         <div class="needs"><span data-id>Untuk:</span><span data-en>For:</span> <b data-id>HP &amp; tablet</b><b data-en>phone &amp; tablet</b> · <span data-id>opsional</span><span data-en>optional</span> <b>Shizuku</b></div>
         <div class="cta">
-          <a class="btn main" href="https://github.com/overnightcoder219/chargecall-app/releases/download/v1.6.1/ChargeCall-1.6.1.apk" data-goatcounter-click="landing-chargecall-download-apk">
-            <span data-id>Unduh APK 1.6.1</span><span data-en>Download APK 1.6.1</span>
+          <a class="btn main" href="https://github.com/overnightcoder219/chargecall-app/releases/download/v1.7.0/ChargeCall-1.7.0.apk" data-goatcounter-click="landing-chargecall-download-apk">
+            <span data-id>Unduh APK 1.7.0</span><span data-en>Download APK 1.7.0</span>
           </a>
           <a class="btn ghost" href="https://overnightcoder219.github.io/chargecall-app/"><span data-id>Lihat detail &amp; setup</span><span data-en>Details &amp; setup</span></a>
         </div>
@@ -352,26 +352,32 @@
 </div>
 <!-- onc-gh -->
 <script>
-  // Rilis GitHub lewat API publik (60 permintaan/jam per IP, sering dibagi banyak pengguna lewat CGNAT):
-  // satu permintaan per repo per halaman, disimpan 30 menit; bila API menolak, pakai simpanan lama.
+  // Data rilis dari releases.json di situs aplikasi masing-masing (ditulis tiap jam & tiap rilis oleh workflow
+  // .github/workflows/releases-json.yml di repo publiknya). Tanpa API GitHub dari browser, jadi tanpa batas 60/jam per IP.
+  // Bentuk: { releases: [{ tag_name, published_at, body, assets: [{ name, download_count }] }] }, terbaru dulu.
   window.oncReleases = (function () {
-    var mem = {}, TTL = 30 * 60 * 1000;
-    function slim(rels) {
-      return rels.filter(function (r) { return !r.draft; }).map(function (r) {
-        return { tag_name: r.tag_name, published_at: r.published_at, body: r.body || '',
-          assets: (r.assets || []).map(function (a) { return { name: a.name, download_count: a.download_count || 0 }; }) };
-      });
+    var mem = {};
+    function siteOf(repo) {
+      var m = /^([A-Za-z0-9-]+)\/([A-Za-z0-9._-]+)$/.exec(repo);
+      if (!m) return null;
+      var owner = m[1].toLowerCase(), name = m[2].toLowerCase();
+      return name === owner + '.github.io' ? 'https://' + name + '/' : 'https://' + owner + '.github.io/' + name + '/';
     }
-    function read(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
-    function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage penuh/tidak ada */ } }
     return function (repo) {
       if (mem[repo]) return mem[repo];
-      var k = 'onc-rel:' + repo, c = read(k);
-      if (c && Array.isArray(c.d) && Date.now() - c.t < TTL) return (mem[repo] = Promise.resolve(c.d));
-      return (mem[repo] = fetch('https://api.github.com/repos/' + repo + '/releases?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
+      var site = siteOf(repo);
+      // Di halaman aplikasinya sendiri: baca dari situs ini (path relatif) supaya juga jalan di salinan lokal.
+      var own = site && location.href.indexOf(site) === 0;
+      var url = own || !site ? 'releases.json' : site + 'releases.json';
+      return (mem[repo] = fetch(url, { cache: 'no-cache' })
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (rels) { var d = slim(Array.isArray(rels) ? rels : []); write(k, { t: Date.now(), d: d }); return d; })
-        .catch(function (e) { if (c && Array.isArray(c.d)) return c.d; throw e; }));
+        .then(function (d) {
+          if (!d || !Array.isArray(d.releases)) throw new Error('format');
+          return d.releases.filter(function (r) { return r && typeof r.tag_name === 'string'; }).map(function (r) {
+            return { tag_name: r.tag_name, published_at: String(r.published_at || ''), body: typeof r.body === 'string' ? r.body : '',
+              assets: Array.isArray(r.assets) ? r.assets.map(function (a) { return { name: String(a && a.name || ''), download_count: Number(a && a.download_count) || 0 }; }) : [] };
+          });
+        }));
     };
   })();
 </script>
@@ -432,7 +438,7 @@
     buildDots(); update();
   })();
   (function () {
-    // Jumlah unduhan APK dari rilis GitHub (API publik, dibaca oleh browser pengunjung). Gagal/limit -> lencana tetap tersembunyi.
+    // Jumlah unduhan APK dari rilis GitHub (releases.json situs aplikasinya). Gagal -> lencana tetap tersembunyi.
     document.querySelectorAll('[data-dl]').forEach(function (el) {
       oncReleases(el.getAttribute('data-dl'))
         .then(function (rels) {
