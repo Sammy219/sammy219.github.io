@@ -19,7 +19,9 @@
   <meta property="og:title" content="OverNightCoder Apps – Aplikasi Android gratis tanpa root">
   <meta property="og:description" content="Aplikasi Android gratis buatan OverNightCoder: SystemMonitor (task manager CPU/RAM/GPU), TabStation (mode desktop tablet), ChargeCall (peringatan baterai bersuara), dan OmoSync (Android Auto untuk motor OMOWAY OMO X).">
   <meta property="og:url" content="https://overnightcoder219.github.io/">
-  <meta property="og:image" content="https://overnightcoder219.github.io/assets/overnightcoder-logo.png">
+  <meta property="og:image" content="https://overnightcoder219.github.io/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "OverNightCoder Apps", "url": "https://overnightcoder219.github.io/", "description": "Aplikasi Android gratis buatan OverNightCoder: SystemMonitor (task manager CPU/RAM/GPU), TabStation (mode desktop tablet), ChargeCall (peringatan baterai bersuara), dan OmoSync (Android Auto untuk motor OMOWAY OMO X).", "author": {"@type": "Person", "name": "OverNightCoder"}}</script>
   <!-- /seo -->
@@ -73,6 +75,27 @@
     .apps-nav.prev { left: 6px; }
     .apps-nav.next { right: 6px; }
     .apps-wrap.can-left .apps-nav.prev, .apps-wrap.can-right .apps-nav.next { opacity: 1; visibility: visible; }
+    /* Di HP kartu hampir selebar layar: panah lebih kecil & tipis supaya tidak menutupi isi kartu. */
+    @media (max-width: 600px) {
+      .apps-nav { width: 34px; height: 34px; top: 118px; background: rgba(17,26,44,.78); }
+      .apps-nav svg { width: 16px; height: 16px; }
+      .apps-nav.prev { left: 2px; } .apps-nav.next { right: 2px; }
+      .apps-wrap::before, .apps-wrap::after { width: 28px; }
+    }
+    .apps-dots { position: relative; z-index: 2; display: flex; justify-content: center; gap: 0; margin: -22px 0 14px; min-height: 26px; }
+    /* Area sentuh 26px, yang terlihat hanya pil 8px di tengah. */
+    .apps-dots button { width: 26px; height: 26px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; transition: width .2s; }
+    .apps-dots button::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--line); transition: width .2s, background .2s; }
+    .apps-dots button[aria-current="true"] { width: 36px; }
+    .apps-dots button[aria-current="true"]::before { width: 22px; background: var(--accent); }
+    .apps-dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; border-radius: 8px; }
+    .apps-dots[hidden] { display: none; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .filters button { background: var(--surface); border: 1px solid var(--line); color: var(--muted); padding: 6px 14px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; transition: border-color .15s, color .15s; }
+    .filters button:hover { border-color: #33466f; color: var(--text); }
+    .filters button[aria-pressed="true"] { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 600; }
+    .app[hidden] { display: none; }
+    .banner h2 .fresh { position: absolute; top: 12px; right: 14px; font-size: 11px; font-weight: 700; letter-spacing: .02em; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); }
     .app { scroll-snap-align: start; display: flex; flex-direction: column; background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; transition: border-color .15s, transform .15s; }
     .app:hover { border-color: #33466f; transform: translateY(-2px); }
     .banner { position: relative; padding: 26px 22px 20px; display: flex; gap: 16px; align-items: center; }
@@ -138,7 +161,7 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><img src="assets/overnightcoder-logo.svg" alt=""> OverNightCoder <span>Apps</span></div>
+    <div class="brand"><img src="assets/overnightcoder-logo.svg" alt="" width="34" height="34"> OverNightCoder <span>Apps</span></div>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set-lang="id" aria-pressed="true">ID</button>
       <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
@@ -152,13 +175,20 @@
     <p data-en>Free, no ads, distributed right here. Every release is signed with the same key and comes with its SHA-256.</p>
   </div>
 
+  <div class="filters" role="group" aria-label="Filter">
+    <button type="button" data-filter="all" aria-pressed="true"><span data-id>Semua</span><span data-en>All</span></button>
+    <button type="button" data-filter="phone" aria-pressed="false"><span data-id>HP</span><span data-en>Phone</span></button>
+    <button type="button" data-filter="tablet" aria-pressed="false">Tablet</button>
+    <button type="button" data-filter="motor" aria-pressed="false"><span data-id>Motor</span><span data-en>Motorbike</span></button>
+  </div>
+
   <div class="apps-wrap">
   <button type="button" class="apps-nav prev" aria-label="Geser ke kiri" data-dir="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button type="button" class="apps-nav next" aria-label="Geser ke kanan" data-dir="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
   <div class="apps">
-    <article class="app omo">
+    <article class="app omo" data-for="phone motor">
       <div class="banner">
-        <img src="assets/omosync-logo.png" alt="">
+        <img src="assets/omosync-logo.webp" alt="" width="72" height="72">
         <div>
           <h2>OmoSync</h2>
           <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 0.5.0 · Android 10+ <span class="dl" data-dl="omosync/omosync.github.io" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
@@ -168,9 +198,9 @@
         <p data-id>Android Auto di layar cockpit motor OMOWAY OMO X lewat Wi-Fi, ditata pas untuk layar lebar 1920×720, plus suara mesin prosedural.</p>
         <p data-en>Android Auto on the OMOWAY OMO X cockpit screen over Wi-Fi, laid out for the wide 1920×720 display, plus a procedural engine sound.</p>
         <div class="strip">
-          <img src="assets/omosync-cockpit.jpg" loading="lazy" alt="OmoSync: Cockpit">
-          <img src="assets/omosync-setup.jpg" loading="lazy" alt="OmoSync: Setup">
-          <img src="assets/omosync-head-unit.jpg" loading="lazy" alt="OmoSync: Head unit">
+          <img src="assets/omosync-cockpit.jpg" loading="lazy" alt="OmoSync: Cockpit" width="540" height="1200">
+          <img src="assets/omosync-setup.jpg" loading="lazy" alt="OmoSync: Setup" width="540" height="1200">
+          <img src="assets/omosync-head-unit.jpg" loading="lazy" alt="OmoSync: Head unit" width="540" height="1200">
         </div>
         <ul data-id>
           <li>Kontrol Android Auto dari HP (layar motor tidak bisa disentuh)</li>
@@ -192,9 +222,9 @@
       </div>
     </article>
 
-    <article class="app sm">
+    <article class="app sm" data-for="phone tablet">
       <div class="banner">
-        <img src="assets/systemmonitor-logo.svg" alt="">
+        <img src="assets/systemmonitor-logo.svg" alt="" width="72" height="72">
         <div>
           <h2>SystemMonitor</h2>
           <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.3 · Android 10+ <span class="dl" data-dl="overnightcoder219/systemmonitor-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
@@ -203,7 +233,7 @@
       <div class="body">
         <p data-id>Task Manager ala Windows untuk tablet dan HP Android: proses per aplikasi, grafik CPU, memori, penyimpanan, jaringan, dan GPU.</p>
         <p data-en>A Windows-style Task Manager for Android tablets and phones: processes per app, graphs for CPU, memory, storage, network and GPU.</p>
-        <div class="shot"><img src="assets/systemmonitor-performa.jpg" loading="lazy" alt="SystemMonitor: tab Performa"></div>
+        <div class="shot"><img src="assets/systemmonitor-performa.jpg" loading="lazy" alt="SystemMonitor: tab Performa" width="1600" height="825"></div>
         <ul data-id>
           <li>Tombol Bersihkan untuk aplikasi cache</li>
           <li>Panduan setup yang memeriksa semuanya</li>
@@ -223,9 +253,9 @@
         </div>
       </div>
     </article>
-    <article class="app cc">
+    <article class="app cc" data-for="phone tablet">
       <div class="banner">
-        <img src="assets/chargecall-logo.svg" alt="">
+        <img src="assets/chargecall-logo.svg" alt="" width="72" height="72">
         <div>
           <h2>ChargeCall</h2>
           <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 1.6.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/chargecall-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
@@ -234,7 +264,7 @@
       <div class="body">
         <p data-id>Peringatan baterai yang bicara, tanpa iklan: aturan seperti Automation iPhone dengan suara AI, rekaman sendiri, lagu, atau nada. Kesehatan baterai, riwayat, widget. Tanpa internet.</p>
         <p data-en>Talking battery alerts without ads: iPhone-Automation-style rules with the AI voice, your own recording, a song or a ringtone. Battery health, history, widget. No internet.</p>
-        <div class="shot"><img src="assets/chargecall-lebar.jpg" loading="lazy" alt="ChargeCall: tab Otomasi di layar lebar"></div>
+        <div class="shot"><img src="assets/chargecall-lebar.jpg" loading="lazy" alt="ChargeCall: tab Otomasi di layar lebar" width="1600" height="720"></div>
         <ul data-id>
           <li>12 pemicu: level, penuh, charger, suhu, cas lambat, cas semalaman, kesehatan</li>
           <li>Kondisi jam, hari, jenis charger, dan profil per aturan</li>
@@ -254,9 +284,9 @@
         </div>
       </div>
     </article>
-    <article class="app ts">
+    <article class="app ts" data-for="tablet">
       <div class="banner">
-        <img src="assets/tabstation-logo.svg" alt="">
+        <img src="assets/tabstation-logo.svg" alt="" width="72" height="72">
         <div>
           <h2>TabStation</h2>
           <div class="ver"><span data-id>Versi</span><span data-en>Version</span> 2.17.1 · Android 10+ <span class="dl" data-dl="overnightcoder219/tabstation-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span></span></div>
@@ -265,7 +295,7 @@
       <div class="body">
         <p data-id>Tablet Android jadi desktop: Dock, menu bar, dan Launchpad ala macOS, atau taskbar dan Start ala Windows, dengan tombol jendela di setiap aplikasi.</p>
         <p data-en>Turns an Android tablet into a desktop: a macOS-style Dock, menu bar and Launchpad, or a Windows-style taskbar and Start, with window buttons on every app.</p>
-        <div class="shot"><img src="assets/tabstation-desktop.jpg" loading="lazy" alt="TabStation: desktop dan Dock"></div>
+        <div class="shot"><img src="assets/tabstation-desktop.jpg" loading="lazy" alt="TabStation: desktop dan Dock" width="1600" height="1068"></div>
         <ul data-id>
           <li>Minimize, maximize layar penuh, tutup, dan Snap Layouts seperti di komputer</li>
           <li>Widget desktop yang bisa diatur, Spotlight, dan pintasan keyboard</li>
@@ -287,6 +317,7 @@
     </article>
   </div>
   </div>
+  <div class="apps-dots" role="group" aria-label="Apps" hidden></div>
 
   <section>
     <h3 data-id>Cara memasang</h3><h3 data-en>How to install</h3>
@@ -319,37 +350,92 @@
     © 2026 OverNightCoder · <span data-id>Proyek pribadi, tanpa garansi. Tidak berafiliasi dengan OMOWAY, Google, Shizuku/RikkaApps, Xiaomi, Microsoft, maupun Apple.</span><span data-en>Personal projects, no warranty. Not affiliated with OMOWAY, Google, Shizuku/RikkaApps, Xiaomi, Microsoft or Apple.</span>
   </footer>
 </div>
+<!-- onc-gh -->
+<script>
+  // Rilis GitHub lewat API publik (60 permintaan/jam per IP, sering dibagi banyak pengguna lewat CGNAT):
+  // satu permintaan per repo per halaman, disimpan 30 menit; bila API menolak, pakai simpanan lama.
+  window.oncReleases = (function () {
+    var mem = {}, TTL = 30 * 60 * 1000;
+    function slim(rels) {
+      return rels.filter(function (r) { return !r.draft; }).map(function (r) {
+        return { tag_name: r.tag_name, published_at: r.published_at, body: r.body || '',
+          assets: (r.assets || []).map(function (a) { return { name: a.name, download_count: a.download_count || 0 }; }) };
+      });
+    }
+    function read(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+    function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage penuh/tidak ada */ } }
+    return function (repo) {
+      if (mem[repo]) return mem[repo];
+      var k = 'onc-rel:' + repo, c = read(k);
+      if (c && Array.isArray(c.d) && Date.now() - c.t < TTL) return (mem[repo] = Promise.resolve(c.d));
+      return (mem[repo] = fetch('https://api.github.com/repos/' + repo + '/releases?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (rels) { var d = slim(Array.isArray(rels) ? rels : []); write(k, { t: Date.now(), d: d }); return d; })
+        .catch(function (e) { if (c && Array.isArray(c.d)) return c.d; throw e; }));
+    };
+  })();
+</script>
+<!-- /onc-gh -->
 <script>
   (function () {
-    // Panah kiri/kanan daftar aplikasi: tampil hanya jika belum mentok di sisi itu.
+    // Daftar aplikasi: panah kiri/kanan (tampil bila belum mentok), titik indikator, dan filter perangkat.
     var wrap = document.querySelector('.apps-wrap');
     if (!wrap) return;
-    var list = wrap.querySelector('.apps');
+    var list = wrap.querySelector('.apps'), dots = document.querySelector('.apps-dots');
+    function cards() { return Array.prototype.filter.call(list.querySelectorAll('.app'), function (c) { return !c.hidden; }); }
+    function step() { var c = cards()[0]; return c ? c.getBoundingClientRect().width + 18 : list.clientWidth * 0.8; }
+    function buildDots() {
+      dots.innerHTML = '';
+      cards().forEach(function (c, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', c.querySelector('h2').firstChild.textContent.trim());
+        b.addEventListener('click', function () { list.scrollTo({ left: list.scrollLeft + c.getBoundingClientRect().left - list.getBoundingClientRect().left - 4, behavior: 'smooth' }); });
+        dots.appendChild(b);
+      });
+    }
     function update() {
       var max = list.scrollWidth - list.clientWidth;
       wrap.classList.toggle('can-left', list.scrollLeft > 2);
       wrap.classList.toggle('can-right', list.scrollLeft < max - 2);
+      dots.hidden = max <= 2;
+      var bs = dots.children, n = bs.length;
+      var at = max <= 2 ? 0 : (list.scrollLeft >= max - 2 ? n - 1 : Math.round(list.scrollLeft / step()));
+      for (var i = 0; i < n; i++) bs[i].setAttribute('aria-current', String(i === at));
     }
     wrap.querySelectorAll('.apps-nav').forEach(function (b) {
+      b.addEventListener('click', function () { list.scrollBy({ left: step() * Number(b.getAttribute('data-dir')), behavior: 'smooth' }); });
+    });
+    document.querySelectorAll('[data-filter]').forEach(function (b) {
       b.addEventListener('click', function () {
-        var card = list.querySelector('.app');
-        var step = card ? card.getBoundingClientRect().width + 18 : list.clientWidth * 0.8;
-        list.scrollBy({ left: step * Number(b.getAttribute('data-dir')), behavior: 'smooth' });
+        var f = b.getAttribute('data-filter');
+        document.querySelectorAll('[data-filter]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        list.querySelectorAll('.app').forEach(function (c) { c.hidden = f !== 'all' && (' ' + c.getAttribute('data-for') + ' ').indexOf(' ' + f + ' ') < 0; });
+        list.scrollLeft = 0;
+        buildDots(); update();
       });
     });
     list.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
     window.addEventListener('load', update);
-    update();
+    buildDots(); update();
   })();
   (function () {
     // Jumlah unduhan APK dari rilis GitHub (API publik, dibaca oleh browser pengunjung). Gagal/limit -> lencana tetap tersembunyi.
     document.querySelectorAll('[data-dl]').forEach(function (el) {
-      fetch('https://api.github.com/repos/' + el.getAttribute('data-dl') + '/releases?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      oncReleases(el.getAttribute('data-dl'))
         .then(function (rels) {
           var n = 0;
           rels.forEach(function (r) { (r.assets || []).forEach(function (a) { if (/\.apk$/i.test(a.name)) n += a.download_count || 0; }); });
+          // Rilis terbaru <= 14 hari: lencana "Baru" (rilis pertama) atau "Update" di samping nama aplikasi.
+          var last = rels.filter(function (r) { return !r.draft; })[0], h2 = el.closest('.app') && el.closest('.app').querySelector('h2');
+          if (last && h2 && Date.now() - new Date(last.published_at).getTime() < 14 * 864e5) {
+            var t = document.createElement('span');
+            t.className = 'fresh';
+            t.innerHTML = rels.length === 1 ? '<span data-id>Baru</span><span data-en>New</span>' : 'Update';
+            t.title = last.tag_name;
+            h2.appendChild(t);
+          }
           if (n <= 0) return;
           el.querySelector('.n').textContent = n.toLocaleString();
           el.hidden = false;
